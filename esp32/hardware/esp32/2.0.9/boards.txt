@@ -194,3 +194,5 @@ esp32c3.menu.EraseFlash.none=Disabled
 esp32c3.menu.EraseFlash.none.upload.erase_cmd=
 esp32c3.menu.EraseFlash.all=Enabled
 esp32c3.menu.EraseFlash.all.upload.erase_cmd=-e
+
+##############################################################
