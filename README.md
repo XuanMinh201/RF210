@@ -5,29 +5,29 @@ RF210 firmware ATC
 Support SenSor: SHTC3, KX023, LTR303, LC76F
 Format: ATC+<cmd>=?
 
-- BT+SHT? : return 1 if sensor is available, return 0 of not
-- BT+TEMP? : return the value of temperature with 0.01° resolution, return 0 if not available
-- BT+HUM? return the value of humidity with 1% resolution, return 0 if not available
+- ATC+SHT? : return 1 if sensor is available, return 0 of not
+- ATC+TEMP? : return the value of temperature with 0.01° resolution, return 0 if not available
+- ATC+HUM? return the value of humidity with 1% resolution, return 0 if not available
 
-- BT+KX023? : return 1 if sensor is available, return 0 of not
-- BT+AX? : return the value of X acceleration with 0.01G resolution, return 0 if not available
-- BT+AY? : return the value of Y acceleration with 0.01G resolution, return 0 if not available
-- BT+AZ? : return the value of Z acceleration with 0.01G resolution, return 0 if not available
+- ATC+KX023? : return 1 if sensor is available, return 0 of not
+- ATC+AX? : return the value of X acceleration with 0.01G resolution, return 0 if not available
+- ATC+AY? : return the value of Y acceleration with 0.01G resolution, return 0 if not available
+- ATC+AZ? : return the value of Z acceleration with 0.01G resolution, return 0 if not available
 
-- BT+LTR? : return 1 if sensor is available, return 0 of not
-- BT+LUMCH0? : return the value of CH0, return 0 if not available
-- BT+LUMCH1? : return the value of CH1, return 0 if not available
-- BT+LUM? : return the value of CH1, return 0 if not available
+- ATC+LTR? : return 1 if sensor is available, return 0 of not
+- ATC+LUMCH0? : return the value of CH0, return 0 if not available
+- ATC+LUMCH1? : return the value of CH1, return 0 if not available
+- ATC+LUM? : return the value of CH1, return 0 if not available
 
-- BT+GPS? : return 1 if sensor is available, return 0 of not
-- BT+GPSON=<1/0> : Turn ON/OFF GPS LDO, return HIGH/LOW 
-- BT+GPSSAT? : return number of satellite available
-- BT+GPSTIME? : return GPS time in EPOCH format, 0 if not available
-- BT+GPSLAT? : return GPS Latitude, 0 if not available
-- BT+GPSLON? : return GPS Longitude, 0 if not available
-- BT+GPSALT? : return GPS Altitude, 0 if not available
+- ATC+GPS? : return 1 if sensor is available, return 0 of not
+- ATC+GPSON=<1/0> : Turn ON/OFF GPS LDO, return HIGH/LOW 
+- ATC+GPSSAT? : return number of satellite available
+- ATC+GPSTIME? : return GPS time in EPOCH format, 0 if not available
+- ATC+GPSLAT? : return GPS Latitude, 0 if not available
+- ATC+GPSLON? : return GPS Longitude, 0 if not available
+- ATC+GPSALT? : return GPS Altitude, 0 if not available
 
-- BT+BAT? : return battery voltage in mv, 0 if not available
+- ATC+BAT? : return battery voltage in mv, 0 if not available
   
 ## Prepare
 ### Hardware
