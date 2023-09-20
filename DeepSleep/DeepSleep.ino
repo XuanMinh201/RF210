@@ -1,9 +1,13 @@
 void setup() {
   Serial.begin(115200);
-  
+  // disnable LDO Rak
   pinMode (10, OUTPUT);
   digitalWrite(10, LOW);
-  
+  //Disnable GPS 
+  pinMode (1, OUTPUT);
+  digitalWrite(10, LOW);
+  pinMode (0, OUTPUT);
+  digitalWrite(10, LOW);  
 }
 
 void loop() {
