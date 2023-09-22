@@ -505,29 +505,29 @@ void setup()
     delay(10); // wait for serial port to open
   }
 
-  api.system.atMode.add("SHT", "", "SHT", SHTC3_init, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("TEMP", "", "TEMP", SHTC3_temp, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("HUM", "", "HUM", SHTC3_humi, RAK_ATCMD_PERM_READ);
+  api.system.atMode.add("SHT", "", "SHT", SHTC3_init);
+  api.system.atMode.add("TEMP", "", "TEMP", SHTC3_temp);
+  api.system.atMode.add("HUM", "", "HUM", SHTC3_humi);
 
-  api.system.atMode.add("KX023", "", "KX023", KX023_init, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("AX", "", "AX", KX023_AX, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("AY", "", "AY", KX023_AY, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("AZ", "", "AZ", KX023_AZ, RAK_ATCMD_PERM_READ);
+  api.system.atMode.add("KX023", "", "KX023", KX023_init);
+  api.system.atMode.add("AX", "", "AX", KX023_AX);
+  api.system.atMode.add("AY", "", "AY", KX023_AY);
+  api.system.atMode.add("AZ", "", "AZ", KX023_AZ);
 
-  api.system.atMode.add("LTR", "", "LTR", LTR_init, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("LUMCH0", "", "LUMCH0", LTR_ch0, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("LUMCH1", "", "LUMCH1", LTR_ch1, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("LUM", "", "LUM", LTR_ch1, RAK_ATCMD_PERM_READ);
+  api.system.atMode.add("LTR", "", "LTR", LTR_init);
+  api.system.atMode.add("LUMCH0", "", "LUMCH0", LTR_ch0);
+  api.system.atMode.add("LUMCH1", "", "LUMCH1", LTR_ch1);
+  api.system.atMode.add("LUM", "", "LUM", LTR_ch1);
 
-  api.system.atMode.add("GPS", "", "GPS", GPS_init, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("GPSON", "", "GPSON", GPS_on_off, RAK_ATCMD_PERM_WRITE | RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("GPSSAT", "", "GPSSAT", GPS_sat, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("GPSTIME", "", "GPSTIME", GPS_time, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("GPSLAT", "", "GPSLAT", GPS_lat, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("GPSLON", "", "GPSLON", GPS_lon, RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("GPSALT", "", "GPSALT", GPS_alt, RAK_ATCMD_PERM_READ);
+  api.system.atMode.add("GPS", "", "GPS", GPS_init);
+  api.system.atMode.add("GPSON", "", "GPSON", GPS_on_off);
+  api.system.atMode.add("GPSSAT", "", "GPSSAT", GPS_sat);
+  api.system.atMode.add("GPSTIME", "", "GPSTIME", GPS_time);
+  api.system.atMode.add("GPSLAT", "", "GPSLAT", GPS_lat);
+  api.system.atMode.add("GPSLON", "", "GPSLON", GPS_lon);
+  api.system.atMode.add("GPSALT", "", "GPSALT", GPS_alt);
 
-  api.system.atMode.add("BAT", "", "BAT", battery, RAK_ATCMD_PERM_READ);
+  api.system.atMode.add("BAT", "", "BAT", battery);
 }
 
 void loop()
