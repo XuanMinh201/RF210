@@ -66,7 +66,7 @@ bool getSHTstatus()
 
 int SHTC3_init(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -82,7 +82,7 @@ int SHTC3_init(SERIAL_PORT port, char *cmd, stParam *param)
 
 int SHTC3_temp(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -106,7 +106,7 @@ int SHTC3_temp(SERIAL_PORT port, char *cmd, stParam *param)
 
 int SHTC3_humi(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -145,7 +145,7 @@ bool getKX023status()
 
 int KX023_init(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -161,7 +161,7 @@ int KX023_init(SERIAL_PORT port, char *cmd, stParam *param)
 
 int KX023_AX(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -184,7 +184,7 @@ int KX023_AX(SERIAL_PORT port, char *cmd, stParam *param)
 
 int KX023_AY(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -207,7 +207,7 @@ int KX023_AY(SERIAL_PORT port, char *cmd, stParam *param)
 
 int KX023_AZ(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -247,7 +247,7 @@ bool getLTRstatus()
 
 int LTR_init(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -263,7 +263,7 @@ int LTR_init(SERIAL_PORT port, char *cmd, stParam *param)
 
 int LTR_ch0(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -292,7 +292,7 @@ int LTR_ch0(SERIAL_PORT port, char *cmd, stParam *param)
 
 int LTR_ch1(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -322,7 +322,7 @@ bool GPS_status = 0;
 
 int GPS_init(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -336,7 +336,7 @@ int GPS_init(SERIAL_PORT port, char *cmd, stParam *param)
   return AT_OK;
 }
 // int GPS_on(SERIAL_PORT port, char *cmd, stParam *param) {
-//   if (param->argc == 1 && !strcmp(param->argv[0], "?")) {
+//   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0))) {
 //     nmea.getNavSystem();
 //     digitalWrite(GPS_EN, HIGH);
 //   } else {
@@ -346,7 +346,7 @@ int GPS_init(SERIAL_PORT port, char *cmd, stParam *param)
 // }
 //
 // int GPS_off(SERIAL_PORT port, char *cmd, stParam *param) {
-//   if (param->argc == 1 && !strcmp(param->argv[0], "?")) {
+//   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0))) {
 //     digitalWrite(GPS_EN, LOW);
 //   } else {
 //     return AT_PARAM_ERROR;
@@ -356,7 +356,7 @@ int GPS_init(SERIAL_PORT port, char *cmd, stParam *param)
 uint32_t on_off_gps;
 int GPS_on_off(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -387,7 +387,7 @@ int GPS_on_off(SERIAL_PORT port, char *cmd, stParam *param)
 
 int GPS_sat(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -402,7 +402,7 @@ int GPS_sat(SERIAL_PORT port, char *cmd, stParam *param)
 
 int GPS_time(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -418,7 +418,7 @@ int GPS_time(SERIAL_PORT port, char *cmd, stParam *param)
 
 int GPS_lat(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -437,7 +437,7 @@ int GPS_lat(SERIAL_PORT port, char *cmd, stParam *param)
 
 int GPS_lon(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -456,7 +456,7 @@ int GPS_lon(SERIAL_PORT port, char *cmd, stParam *param)
 
 int GPS_alt(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
@@ -479,7 +479,7 @@ int GPS_alt(SERIAL_PORT port, char *cmd, stParam *param)
 
 int battery(SERIAL_PORT port, char *cmd, stParam *param)
 {
-  if (param->argc == 1 && !strcmp(param->argv[0], "?"))
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
