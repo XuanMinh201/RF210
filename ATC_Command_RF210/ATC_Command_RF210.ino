@@ -505,29 +505,29 @@ void setup()
     delay(10); // wait for serial port to open
   }
 
-  api.system.atMode.add("SHT", "", "SHT", SHTC3_init);
-  api.system.atMode.add("TEMP", "", "TEMP", SHTC3_temp);
-  api.system.atMode.add("HUM", "", "HUM", SHTC3_humi);
+  api.system.atMode.add("SHT", "This command gets the status of the SHTC3 sensor. 1 if available.", "SHT", SHTC3_init);
+  api.system.atMode.add("TEMP", "This command gets the temperature value with 0.01° resolution", "TEMP", SHTC3_temp);
+  api.system.atMode.add("HUM", "This command gets the humidity value with 1% resolution", "HUM", SHTC3_humi);
 
-  api.system.atMode.add("KX023", "", "KX023", KX023_init);
-  api.system.atMode.add("AX", "", "AX", KX023_AX);
-  api.system.atMode.add("AY", "", "AY", KX023_AY);
-  api.system.atMode.add("AZ", "", "AZ", KX023_AZ);
+  api.system.atMode.add("KX023", "This command gets the status of the KX023 sensor. 1 if available.", "KX023", KX023_init);
+  api.system.atMode.add("AX", "This command gets the value of X acceleration with 0.01G resolution", "AX", KX023_AX);
+  api.system.atMode.add("AY", "This command gets the value of Y acceleration with 0.01G resolution", "AY", KX023_AY);
+  api.system.atMode.add("AZ", "This command gets the value of Z acceleration with 0.01G resolution", "AZ", KX023_AZ);
 
-  api.system.atMode.add("LTR", "", "LTR", LTR_init);
-  api.system.atMode.add("LUMCH0", "", "LUMCH0", LTR_ch0);
-  api.system.atMode.add("LUMCH1", "", "LUMCH1", LTR_ch1);
-  api.system.atMode.add("LUM", "", "LUM", LTR_ch1);
+  api.system.atMode.add("LTR", "This command gets the status of the LTR-303 sensor. 1 if available.", "LTR", LTR_init);
+  api.system.atMode.add("LUMCH0", "This command gets the CHANNEL0 value of the LTR-303 sensor", "LUMCH0", LTR_ch0);
+  api.system.atMode.add("LUMCH1", "This command gets the CHANNEL1 value of the LTR-303 sensor", "LUMCH1", LTR_ch1);
+  api.system.atMode.add("LUM", "This command gets the CHANNEL1 value of the LTR-303 sensor", "LUM", LTR_ch1);
 
-  api.system.atMode.add("GPS", "", "GPS", GPS_init);
-  api.system.atMode.add("GPSON", "", "GPSON", GPS_on_off);
-  api.system.atMode.add("GPSSAT", "", "GPSSAT", GPS_sat);
-  api.system.atMode.add("GPSTIME", "", "GPSTIME", GPS_time);
-  api.system.atMode.add("GPSLAT", "", "GPSLAT", GPS_lat);
-  api.system.atMode.add("GPSLON", "", "GPSLON", GPS_lon);
-  api.system.atMode.add("GPSALT", "", "GPSALT", GPS_alt);
+  api.system.atMode.add("GPS", "This command gets the status of the GNSS module. 1 if available.", "GPS", GPS_init);
+  api.system.atMode.add("GPSON", "This command sets the GNSS module power | =1 : GNSS ON | =0 : GNSS OFF", "GPSON", GPS_on_off);
+  api.system.atMode.add("GPSSAT", "This command gets the number of available satellite(s)", "GPSSAT", GPS_sat);
+  api.system.atMode.add("GPSTIME", "This command gets the GPS time in EPOCH format", "GPSTIME", GPS_time);
+  api.system.atMode.add("GPSLAT", "This command gets the current latitude | Return 0 if coordinate is not available", "GPSLAT", GPS_lat);
+  api.system.atMode.add("GPSLON", "This command gets the current longtitude | Return 0 if coordinate is not available", "GPSLON", GPS_lon);
+  api.system.atMode.add("GPSALT", "This command gets the current altitude | Return 0 if coordinate is not available", "GPSALT", GPS_alt);
 
-  api.system.atMode.add("BAT", "", "BAT", battery);
+  api.system.atMode.add("BAT", "This command gets the battery voltage in mV | Return 0 if not available", "BAT", battery);
 }
 
 void loop()
