@@ -496,10 +496,11 @@ int battery(SERIAL_PORT port, char *cmd, stParam *param)
 
 void setup()
 {
-  Serial1.begin(9600);
+  Serial.begin(115200,RAK_AT_MODE);
+  Serial1.begin(9600,RAK_CUSTOM_MODE);
   pinMode(GPS_EN, OUTPUT);
-  pinMode(GPS_detected, OUTPUT);
-  digitalWrite(GPS_detected, LOW);
+  pinMode(GPS_detected, INPUT);
+  
   while (!Serial)
   {
     delay(10); // wait for serial port to open
@@ -536,14 +537,15 @@ void loop()
 
 void quectel_getData(String _revString, char *_revChar, int _len)
 {
-  while (Serial1.available())
+  int count_gps = 0;
+  while (Serial1.available() && count_gps <50 )
   {
+    count_gps++;
     _revString = Serial1.readStringUntil(0x0D);
-    // Serial.println(_revString);
+    //Serial.println(_revString);
     _len = _revString.length() + 1;
     _revString.toCharArray(_revChar, _len);
-    for (int i = 0; i < _len; i++)
-    {
+    for (int i = 0; i < _len; i++) {
       // Serial2.print(*(_revChar + i));
       nmea.process(*(_revChar + i));
     }
