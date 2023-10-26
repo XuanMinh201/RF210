@@ -1,16 +1,24 @@
 /**
- * @file ATC_Command_RF210.ino
- * @author XuanMinh201
- *
- * @brief This sketch add custom ATC command to RFThings RF210 board. These commands help controlling on-board sensors,
- * GNSS & measuring battery level. For detail description, please visit: https://github.com/XuanMinh201/RF210
- *
- * @version 0.0.1
- * @date 2023-09-22
- *
- * @copyright Copyright (c) 2023
- *
- */
+
+   RRRR  FFFF  22   11   000  
+   R   R F    2  2 111  0  00 
+   RRRR  FFF    2   11  0 0 0 
+   R R   F     2    11  00  0 
+   R  RR F    2222 11l1  000
+
+
+   @file ATC_Command_RF210.ino
+   @author XuanMinh201
+
+   @brief This sketch add custom ATC command to RFThings RF210 board. These commands help controlling on-board sensors,
+   GNSS & measuring battery level. For detail description, please visit: https://github.com/XuanMinh201/RF210
+
+   @version 0.1.1
+   @date 2023-10-26
+
+   @copyright Copyright (c) 2023
+
+*/
 
 #include "Adafruit_SHTC3.h"         // http://librarymanager/All#Adafruit_SHTC3
 #include <Kionix_KX023.h>           // TO-DO: Add this original
@@ -52,9 +60,7 @@ int len = 0;
 
 uint32_t quectelDelayTime = 500;
 unsigned long currentMillis = 0, getSensorDataPrevMillis = 0, getGPSPrevMillis = 0;
-
 bool sht_status;
-
 bool getSHTstatus()
 {
   if (!shtc3.begin())
@@ -62,6 +68,20 @@ bool getSHTstatus()
     return 0;
   }
   return 1;
+}
+
+int ATC_Ver(SERIAL_PORT port, char *cmd, stParam *param)
+{
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
+  {
+    Serial.print(cmd);
+    Serial.println("=0.1.1");
+  }
+  else
+  {
+    return AT_PARAM_ERROR;
+  }
+  return AT_OK;
 }
 
 int SHTC3_init(SERIAL_PORT port, char *cmd, stParam *param)
@@ -84,13 +104,12 @@ int SHTC3_temp(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    Serial.print(cmd);
-    Serial.print("=");
+
     if (sht_status)
     {
       shtc3.getEvent(&humidity, &temp);
-      Serial.print(temp.temperature);
-      Serial.println(" degree C");
+      Serial.println(temp.temperature);
+
     }
     else
     {
@@ -108,13 +127,11 @@ int SHTC3_humi(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    Serial.print(cmd);
-    Serial.print("=");
     if (sht_status)
     {
       shtc3.getEvent(&humidity, &temp);
-      Serial.print(int(humidity.relative_humidity));
-      Serial.println("%");
+      Serial.println(int(humidity.relative_humidity));
+
     }
     else
     {
@@ -149,7 +166,6 @@ int KX023_init(SERIAL_PORT port, char *cmd, stParam *param)
   {
     Serial.print(cmd);
     Serial.print("=");
-    kx023_status = getKX023status();
     Serial.println(kx023_status ? "1" : "0");
   }
   else
@@ -163,8 +179,6 @@ int KX023_AX(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    Serial.print(cmd);
-    Serial.print("=");
     if (kx023_status)
     {
       myIMU.readAcceleration(&kx_x, &kx_y, &kx_z);
@@ -186,8 +200,6 @@ int KX023_AY(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    Serial.print(cmd);
-    Serial.print("=");
     if (kx023_status)
     {
       myIMU.readAcceleration(&kx_x, &kx_y, &kx_z);
@@ -209,8 +221,6 @@ int KX023_AZ(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    Serial.print(cmd);
-    Serial.print("=");
     if (kx023_status)
     {
       myIMU.readAcceleration(&kx_x, &kx_y, &kx_z);
@@ -251,7 +261,6 @@ int LTR_init(SERIAL_PORT port, char *cmd, stParam *param)
   {
     Serial.print(cmd);
     Serial.print("=");
-    ltr_status = getLTRstatus();
     Serial.println(ltr_status ? "1" : "0");
   }
   else
@@ -265,8 +274,6 @@ int LTR_ch0(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    Serial.print(cmd);
-    Serial.print("=");
     if (ltr_status)
     {
       if (ltr.newDataAvailable())
@@ -294,8 +301,6 @@ int LTR_ch1(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    Serial.print(cmd);
-    Serial.print("=");
     if (ltr_status)
     {
       if (ltr.newDataAvailable())
@@ -320,13 +325,18 @@ int LTR_ch1(SERIAL_PORT port, char *cmd, stParam *param)
 }
 bool GPS_status = 0;
 
-int GPS_init(SERIAL_PORT port, char *cmd, stParam *param)
+int GPS_STT(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     Serial.print(cmd);
     Serial.print("=");
-    quectel_getData(revString, revChar, len);
+    if (Serial1.available()){
+      GPS_status = 1;
+    }
+    else {
+      GPS_status = 0;
+    }
     Serial.println(GPS_status ? "1" : "0");
   }
   else
@@ -335,24 +345,7 @@ int GPS_init(SERIAL_PORT port, char *cmd, stParam *param)
   }
   return AT_OK;
 }
-// int GPS_on(SERIAL_PORT port, char *cmd, stParam *param) {
-//   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0))) {
-//     nmea.getNavSystem();
-//     digitalWrite(GPS_EN, HIGH);
-//   } else {
-//     return AT_PARAM_ERROR;
-//   }
-//   return AT_OK;
-// }
-//
-// int GPS_off(SERIAL_PORT port, char *cmd, stParam *param) {
-//   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0))) {
-//     digitalWrite(GPS_EN, LOW);
-//   } else {
-//     return AT_PARAM_ERROR;
-//   }
-//   return AT_OK;
-// }
+
 uint32_t on_off_gps;
 int GPS_on_off(SERIAL_PORT port, char *cmd, stParam *param)
 {
@@ -496,15 +489,19 @@ int battery(SERIAL_PORT port, char *cmd, stParam *param)
 
 void setup()
 {
-  Serial.begin(115200,RAK_AT_MODE);
-  Serial1.begin(9600,RAK_CUSTOM_MODE);
+  Serial.begin(115200, RAK_AT_MODE);
+  Serial1.begin(9600, RAK_CUSTOM_MODE);
   pinMode(GPS_EN, OUTPUT);
   pinMode(GPS_detected, INPUT);
-  
+  sht_status = getSHTstatus();
+  kx023_status = getKX023status();
+  ltr_status = getLTRstatus();
   while (!Serial)
   {
     delay(10); // wait for serial port to open
   }
+
+  api.system.atMode.add("VER", "This is ver ATC commnad: V1.1", "V1.1", ATC_Ver);
 
   api.system.atMode.add("SHT", "This command gets the status of the SHTC3 sensor. 1 if available.", "SHT", SHTC3_init);
   api.system.atMode.add("TEMP", "This command gets the temperature value with 0.01° resolution", "TEMP", SHTC3_temp);
@@ -520,7 +517,7 @@ void setup()
   api.system.atMode.add("LUMCH1", "This command gets the CHANNEL1 value of the LTR-303 sensor", "LUMCH1", LTR_ch1);
   api.system.atMode.add("LUM", "This command gets the CHANNEL1 value of the LTR-303 sensor", "LUM", LTR_ch1);
 
-  api.system.atMode.add("GPS", "This command gets the status of the GNSS module. 1 if available.", "GPS", GPS_init);
+  api.system.atMode.add("GPS", "This command gets the status of the GNSS module. 1 if available.", "GPS", GPS_STT);
   api.system.atMode.add("GPSON", "This command sets the GNSS module power | =1 : GNSS ON | =0 : GNSS OFF", "GPSON", GPS_on_off);
   api.system.atMode.add("GPSSAT", "This command gets the number of available satellite(s)", "GPSSAT", GPS_sat);
   api.system.atMode.add("GPSTIME", "This command gets the GPS time in EPOCH format", "GPSTIME", GPS_time);
@@ -533,26 +530,21 @@ void setup()
 
 void loop()
 {
-}
-
-void quectel_getData(String _revString, char *_revChar, int _len)
-{
-  int count_gps = 0;
-  while (Serial1.available() && count_gps <50 )
+  if (GPS_EN == 1 && Serial1.available())
   {
-    count_gps++;
-    _revString = Serial1.readStringUntil(0x0D);
+    revString = Serial1.readStringUntil(0x0D);
     //Serial.println(_revString);
-    _len = _revString.length() + 1;
-    _revString.toCharArray(_revChar, _len);
-    for (int i = 0; i < _len; i++) {
+    len = revString.length() + 1;
+    revString.toCharArray(revChar, len);
+    for (int i = 0; i < len; i++) {
       // Serial2.print(*(_revChar + i));
-      nmea.process(*(_revChar + i));
+      nmea.process(*(revChar + i));
     }
   }
   quectelDelayTime = 5;
-  GPS_status = 1;
+  
 }
+
 
 unsigned long unixTimestamp(int year, int month, int day, int hour, int min, int sec)
 {
