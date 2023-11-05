@@ -1,6 +1,7 @@
 # RF210
 
-RF210 firmware ATC 
+RF210 firmware ATC
+version 0.1.2
 
 Support sensors:
 - [Digital humidity and temperature sensor - SHTC3](https://www.sensirion.com/products/catalog/SHTC3/)
@@ -9,6 +10,8 @@ Support sensors:
 - [GNSS LC76F](https://www.quectel.com/product/gnss-lc76f)
 
 Command general format: ```ATC+<cmd>=?```
+
+- ```ATC+VER=?``` : return version of the firmware
 
 - ```ATC+SHT=?``` : return 1 if sensor is available, return 0 of not
 - ```ATC+TEMP=?``` : return the value of temperature with 0.01° resolution, return 0 if not available
@@ -31,8 +34,12 @@ Command general format: ```ATC+<cmd>=?```
 - ```ATC+GPSLAT=?``` : return GPS Latitude, 0 if not available
 - ```ATC+GPSLON=?``` : return GPS Longitude, 0 if not available
 - ```ATC+GPSALT=?``` : return GPS Altitude, 0 if not available
+- ```ATC+GPSNMEA=<1/0>``` : Activate NMEA log from GNSS module
+- ```ATC+GPSLOG=<1/0>``` : Activate GNSS Log from GNSS module
+- ```ATC+GPSDC=<1/0>``` : Set GNSS module in duty cycle mode with 30sec sleep
 
 - ```ATC+BAT=?``` : return battery voltage in mv, 0 if not available
+- ```ATC+LDO=?``` : return LDO voltage on Rak3172 in mv, 0 if not available
   
 ## Getting Started
 
