@@ -761,6 +761,8 @@ void loop()
     for (int i = 0; i < len; i++) {
       if(nmea_gps){
       Serial.print(*(revChar + i));
+      Serial1.write(Serial.read());   // read Serial and send it out Serial1 
+      
       }
       nmea.process(*(revChar + i));
     }
