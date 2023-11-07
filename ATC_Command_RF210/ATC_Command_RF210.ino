@@ -24,7 +24,8 @@
 
 #include "Adafruit_SHTC3.h"         // http://librarymanager/All#Adafruit_SHTC3
 #include <Kionix_KX023.h>           // TO-DO: Add this original
-#include "Adafruit_LTR329_LTR303.h" // http://librarymanager/All#Adafruit_LTR329_LTR303
+//#include "Adafruit_LTR329_LTR303.h" // http://librarymanager/All#Adafruit_LTR329_LTR303
+#include <LTR303.h> // https://github.com/automote/LTR303     // update lib with : value = (high << 8) + low;
 #include <MicroNMEA.h>              // http://librarymanager/All#SparkFun_Ublox
 
 #define GPS_EN PA1
@@ -37,17 +38,21 @@
 #define LS_BATVOLT_R2 2.0f
 #define LS_BATVOLT_PIN PA15
 
-Adafruit_LTR303 ltr = Adafruit_LTR303();
 Adafruit_SHTC3 shtc3 = Adafruit_SHTC3();
 KX023 myIMU;
+LTR303 light;
 
+unsigned char gain=0;     // Gain setting, values = 0-7 
+unsigned char integrationTime=0;  // Integration ("shutter") time in milliseconds
 uint16_t voltage_adc;
 uint16_t voltage;
 float kx_x, kx_y, kx_z;
 int humi, temper;
 sensors_event_t humidity, temp;
 bool valid;
-uint16_t visible_plus_ir, infrared;
+bool ltr_status;
+unsigned int visible, infrared;
+double lux;
 int timezone = 7;
 int year;
 int mon;
@@ -96,7 +101,8 @@ int ATC_Ver(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int SHTC3_init(SERIAL_PORT port, char *cmd, stParam *param)
@@ -114,7 +120,8 @@ int SHTC3_init(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int SHTC3_temp(SERIAL_PORT port, char *cmd, stParam *param)
@@ -141,7 +148,8 @@ int SHTC3_temp(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int SHTC3_humi(SERIAL_PORT port, char *cmd, stParam *param)
@@ -167,7 +175,8 @@ int SHTC3_humi(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 bool kx023_status;
@@ -198,7 +207,8 @@ int KX023_init(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int KX023_AX(SERIAL_PORT port, char *cmd, stParam *param)
@@ -225,7 +235,8 @@ int KX023_AX(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int KX023_AY(SERIAL_PORT port, char *cmd, stParam *param)
@@ -252,7 +263,8 @@ int KX023_AY(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int KX023_AZ(SERIAL_PORT port, char *cmd, stParam *param)
@@ -279,93 +291,113 @@ int KX023_AZ(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
-bool ltr_status;
 
 bool getLTRstatus()
 {
-  if (!ltr.begin())
-  {
-    return 0;
-  }
-  else
-  {
-    ltr.setGain(LTR3XX_GAIN_1);
-    ltr.setIntegrationTime(LTR3XX_INTEGTIME_50);
-    ltr.setMeasurementRate(LTR3XX_MEASRATE_50);
+  unsigned char ID; 
+   
+  if (light.getPartID(ID)) {
+    light.setControl(gain, false, false);
+    light.setMeasurementRate(1,3);
     return 1;
   }
+  // Most library commands will return true if communications was successful,
+  // and false if there was a problem. You can ignore this returned value,
+  // or check whether a command worked correctly and retrieve an error code:
+  else {
+    return 0;
+  }  
+}
+
+unsigned char getLTRID()
+{
+  unsigned char ID; 
+   
+  if (light.getPartID(ID)) {  
+    return ID;
+  }
+  // Most library commands will return true if communications was successful,
+  // and false if there was a problem. You can ignore this returned value,
+  // or check whether a command worked correctly and retrieve an error code:
+  else {
+    return 0;
+  }  
 }
 
 int LTR_init(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
+    //light.setPowerUp();
+    ltr_status = getLTRstatus();
     if (param->argc == 0){
      Serial.print(cmd);
      Serial.print("=");}
     Serial.println(ltr_status ? "1" : "0");
+    Serial.print("LTR Sensor Part ID: 0X");
+    Serial.println(getLTRID(),HEX);
+    //light.setPowerDown();
   }
   else
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int LTR_ch0(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    if (ltr_status)
-    {
-      if (ltr.newDataAvailable())
-      {
-        valid = ltr.readBothChannels(visible_plus_ir, infrared);
-        if (valid)
-        {
+    //ltr_status = getLTRstatus();
+    //light.setPowerUp();
+    //delay(5000);
+    if (light.getData(visible, infrared)){
           if (param->argc == 0){
-     Serial.print(cmd);
-     Serial.print("=");}
-          Serial.println(visible_plus_ir);
+          Serial.print(cmd);
+          Serial.print("=");}
+          Serial.println(visible);
+         // light.setPowerDown(); 
         }
-      }
-    }
+    else
+        {
+      if (param->argc == 0){
+      Serial.print(cmd);
+      Serial.print("=");}
+      Serial.println("0");
+        }
+  }
+
+  
     else
     {
-      if (param->argc == 0){
-     Serial.print(cmd);
-     Serial.print("=");}
-      Serial.println("0");
-    }
-  }
-  else
-  {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int LTR_ch1(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
-    if (ltr_status)
-    {
-      if (ltr.newDataAvailable())
-      {
-        valid = ltr.readBothChannels(visible_plus_ir, infrared);
-        if (valid)
-        {
+    
+    //ltr_status = getLTRstatus();
+    //light.setPowerUp();
+    //delay(200);
+      if (light.getData(visible, infrared))
+      {        
           if (param->argc == 0){
-     Serial.print(cmd);
-     Serial.print("=");}
-          Serial.println(infrared);
-        }
-      }
-    }
+      Serial.print(cmd);
+      Serial.print("=");}
+      Serial.println(infrared);
+     // light.setPowerDown();      
+      }  
     else
     {
       if (param->argc == 0){
@@ -378,8 +410,44 @@ int LTR_ch1(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+if (param->argc == 0){
+  return AT_OK;}
 }
+
+int LTR_lux(SERIAL_PORT port, char *cmd, stParam *param)
+{
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
+  {
+    //ltr_status = getLTRstatus();
+   // light.setPowerUp();
+    //delay(5000);    
+      if (light.getData(visible, infrared))
+      {       
+          if (param->argc == 0){
+     Serial.print(cmd);
+     Serial.print("=");}
+     
+    valid = light.getLux(gain,integrationTime,visible,infrared,lux);     
+     Serial.println(lux);
+    // light.setPowerDown();        
+      }
+    
+    else
+    {
+      if (param->argc == 0){
+     Serial.print(cmd);
+     Serial.print("=");}
+      Serial.println("0");
+    }
+  }
+  else
+  {
+    return AT_PARAM_ERROR;
+  }
+  if (param->argc == 0){
+  return AT_OK;}
+}
+
 bool GPS_status = 0;
 
 int GPS_STT(SERIAL_PORT port, char *cmd, stParam *param)
@@ -402,7 +470,8 @@ int GPS_STT(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 
@@ -439,7 +508,8 @@ int GPS_on_off(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int GPS_sat(SERIAL_PORT port, char *cmd, stParam *param)
@@ -455,7 +525,8 @@ int GPS_sat(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int GPS_time(SERIAL_PORT port, char *cmd, stParam *param)
@@ -472,7 +543,8 @@ int GPS_time(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int GPS_lat(SERIAL_PORT port, char *cmd, stParam *param)
@@ -492,7 +564,8 @@ int GPS_lat(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int GPS_lon(SERIAL_PORT port, char *cmd, stParam *param)
@@ -512,7 +585,8 @@ int GPS_lon(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int GPS_alt(SERIAL_PORT port, char *cmd, stParam *param)
@@ -539,7 +613,8 @@ int GPS_alt(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int GPS_nmea(SERIAL_PORT port, char *cmd, stParam *param)
@@ -571,7 +646,8 @@ int GPS_nmea(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int GPS_log(SERIAL_PORT port, char *cmd, stParam *param)
@@ -602,7 +678,8 @@ int GPS_log(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int GPS_dc(SERIAL_PORT port, char *cmd, stParam *param)
@@ -638,7 +715,28 @@ int GPS_dc(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
+}
+
+int GPS_const(SERIAL_PORT port, char *cmd, stParam *param)
+{
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
+  {
+    
+   if (param->argc == 0){
+     Serial.print(cmd);
+     Serial.print("=");}
+   Serial.println("activate all Constallations");
+   Serial1.println("$PGKC115,1,1,0,1*2B");
+  }
+    
+  else
+  {
+    return AT_PARAM_ERROR;
+  }
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 
@@ -661,7 +759,8 @@ int battery(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 int ldo_read(SERIAL_PORT port, char *cmd, stParam *param)
@@ -677,7 +776,8 @@ int ldo_read(SERIAL_PORT port, char *cmd, stParam *param)
   {
     return AT_PARAM_ERROR;
   }
-  return AT_OK;
+  if (param->argc == 0){
+  return AT_OK;}
 }
 
 
@@ -694,7 +794,8 @@ void setup()
   digitalWrite(LED, LOW);
   sht_status = getSHTstatus();
   kx023_status = getKX023status();
-  ltr_status = getLTRstatus();
+  light.begin();
+  light.setPowerUp();
   while (!Serial)
   {
     delay(10); // wait for serial port to open
@@ -714,7 +815,7 @@ void setup()
   api.system.atMode.add("LTR", "Return the status of the LTR-303 sensor. 1 if available.", "LTR", LTR_init,RAK_ATCMD_PERM_READ);
   api.system.atMode.add("LUMCH0", "Return the CHANNEL0 value of the LTR-303 sensor", "LUMCH0", LTR_ch0,RAK_ATCMD_PERM_READ);
   api.system.atMode.add("LUMCH1", "Return the CHANNEL1 value of the LTR-303 sensor", "LUMCH1", LTR_ch1,RAK_ATCMD_PERM_READ);
-  api.system.atMode.add("LUM", "Return the CHANNEL1 value of the LTR-303 sensor", "LUM", LTR_ch1,RAK_ATCMD_PERM_READ);
+  api.system.atMode.add("LUM", "Return the CHANNEL1 value of the LTR-303 sensor", "LUM", LTR_lux,RAK_ATCMD_PERM_READ);
 
   api.system.atMode.add("GPS", "Return the status of the GNSS module. 1 if available.", "GPS", GPS_STT,RAK_ATCMD_PERM_READ);
   api.system.atMode.add("GPSON", "Return the GNSS module power | =1 : GNSS ON | =0 : GNSS OFF", "GPSON", GPS_on_off,RAK_ATCMD_PERM_WRITE);
@@ -727,6 +828,7 @@ void setup()
   api.system.atMode.add("GPSNMEA", "Activate the NMEA log from GNSS module | =1 : NMEA ON | =0 : NMEA OFF", "GPSON", GPS_nmea,RAK_ATCMD_PERM_WRITE);
   api.system.atMode.add("GPSLOG", "Activate the results from GNSS module every 5s | =1 : LOG ON | =0 : LOG OFF", "GPSLOG", GPS_log,RAK_ATCMD_PERM_WRITE);
   api.system.atMode.add("GPSDC", "Set GNSS module in duty cycle mode with 30sec sleep | =1 : DC ON | =0 : DC OFF", "GPSDC", GPS_dc,RAK_ATCMD_PERM_WRITE);
+  api.system.atMode.add("GPSCONST", "Activate Galileo, Beidu, GPS and Glonass constellations", "GPSCONST", GPS_const,RAK_ATCMD_PERM_READ);
 
   api.system.atMode.add("BAT", "Return battery voltage in mV | Return 0 if not available", "BAT", battery,RAK_ATCMD_PERM_READ);
   api.system.atMode.add("LDO", "Return LDO voltage in mV | Return 0 if not available", "LDO", ldo_read,RAK_ATCMD_PERM_READ);
