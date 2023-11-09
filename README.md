@@ -3,7 +3,7 @@
 RF210 firmware ATC
 version 0.1.2
 
-Support sensors:
+Supported sensors:
 - [Digital humidity and temperature sensor - SHTC3](https://www.sensirion.com/products/catalog/SHTC3/)
 - [Tri-Axis Accelerometer - KX023-1025](https://www.rohm.com/products/sensors-mems/accelerometer-ics/kx023-1025-product)
 - [Ambient Light Sensor - LTR-303ALS-01](https://optoelectronics.liteon.com/en-global/Led/led-component/Detail/926)
@@ -28,6 +28,7 @@ Command general format: ```ATC+<cmd>=?```
 - ```ATC+LUM=?``` : return the value of CH1, return 0 if not available
 
 - ```ATC+GPS=?``` : return 1 if sensor is available, return 0 of not
+- ```ATC+GPSFIX=?``` : return 1 if GNSS get a fix, return 0 of not
 - ```ATC+GPSON=<1/0>``` : Turn ON/OFF GPS LDO, return HIGH/LOW 
 - ```ATC+GPSSAT=?``` : return number of satellite available
 - ```ATC+GPSTIME=?``` : return GPS time in EPOCH format, 0 if not available
