@@ -746,7 +746,7 @@ int GPS_const(SERIAL_PORT port, char *cmd, stParam *param)
      Serial.print(cmd);
      Serial.print("=");}
    Serial.println("activate all Constallations");
-   Serial1.println("$PGKC115,1,1,0,1*2B");
+   Serial1.println("$PGKC121,1,1,0,1*2C");
   }
     
   else
