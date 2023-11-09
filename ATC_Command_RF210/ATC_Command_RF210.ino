@@ -547,6 +547,24 @@ int GPS_time(SERIAL_PORT port, char *cmd, stParam *param)
   return AT_OK;}
 }
 
+int GPS_fix(SERIAL_PORT port, char *cmd, stParam *param)
+{
+  if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
+  {
+    
+    if (param->argc == 0){
+     Serial.print(cmd);
+     Serial.print("=");}
+    Serial.println(nmea.isValid());
+    }
+  else
+  {
+    return AT_PARAM_ERROR;
+  }
+  if (param->argc == 0){
+  return AT_OK;}
+}
+
 int GPS_lat(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
@@ -829,6 +847,7 @@ void setup()
   api.system.atMode.add("GPSLOG", "Activate the results from GNSS module every 5s | =1 : LOG ON | =0 : LOG OFF", "GPSLOG", GPS_log,RAK_ATCMD_PERM_WRITE);
   api.system.atMode.add("GPSDC", "Set GNSS module in duty cycle mode with 30sec sleep | =1 : DC ON | =0 : DC OFF", "GPSDC", GPS_dc,RAK_ATCMD_PERM_WRITE);
   api.system.atMode.add("GPSCONST", "Activate Galileo, Beidu, GPS and Glonass constellations", "GPSCONST", GPS_const,RAK_ATCMD_PERM_READ);
+  api.system.atMode.add("GPSFIX", "Return the fix status of the GNSS module. 1 if the module get a fix, 0 else.", "GPSFIX", GPS_fix,RAK_ATCMD_PERM_READ);
 
   api.system.atMode.add("BAT", "Return battery voltage in mV | Return 0 if not available", "BAT", battery,RAK_ATCMD_PERM_READ);
   api.system.atMode.add("LDO", "Return LDO voltage in mV | Return 0 if not available", "LDO", ldo_read,RAK_ATCMD_PERM_READ);
