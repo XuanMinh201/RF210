@@ -36,7 +36,7 @@
 #define LS_ADC_AREF 3.0f
 #define LS_BATVOLT_R1 1.0f
 #define LS_BATVOLT_R2 2.0f
-#define LS_BATVOLT_PIN PA15
+#define LS_BATVOLT_PIN PB2
 
 Adafruit_SHTC3 shtc3 = Adafruit_SHTC3();
 KX023 myIMU;
