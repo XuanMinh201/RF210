@@ -163,7 +163,7 @@ int SHTC3_humi(SERIAL_PORT port, char *cmd, stParam *param)
      Serial.print(cmd);
      Serial.print("=");}
       shtc3.getEvent(&humidity, &temp);
-      Serial.println(int(humidity.relative_humidity));
+      Serial.println(humidity.relative_humidity);
 
     }
     else
@@ -758,9 +758,6 @@ int GPS_const(SERIAL_PORT port, char *cmd, stParam *param)
 }
 
 
-
-
-
 int battery(SERIAL_PORT port, char *cmd, stParam *param)
 {
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
@@ -797,8 +794,6 @@ int ldo_read(SERIAL_PORT port, char *cmd, stParam *param)
   if (param->argc == 0){
   return AT_OK;}
 }
-
-
 
 
 void setup()
@@ -882,15 +877,13 @@ void loop()
     for (int i = 0; i < len; i++) {
       if(nmea_gps){
       Serial.print(*(revChar + i));
-      Serial1.write(Serial.read());   // read Serial and send it out Serial1 
-      
+      Serial1.write(Serial.read());   // read Serial and send it out Serial1      
       }
       nmea.process(*(revChar + i));
     }
 
   } 
-  delay(5); // wait 20ms
-  
+  delay(20); // wait 20ms  
 }
 
 
