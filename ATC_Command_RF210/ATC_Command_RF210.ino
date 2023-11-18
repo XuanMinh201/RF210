@@ -33,7 +33,7 @@
 #define boot_button PH3
 #define LED PA0
 #define DATA_INTERVAL 5000 // ms
-#define LS_ADC_AREF 3.0f
+#define LS_ADC_AREF 3.3f
 #define LS_BATVOLT_R1 1.0f
 #define LS_BATVOLT_R2 2.0f
 #define LS_BATVOLT_PIN PB2
