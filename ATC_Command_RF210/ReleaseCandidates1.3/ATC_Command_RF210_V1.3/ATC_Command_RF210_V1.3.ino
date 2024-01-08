@@ -874,8 +874,8 @@ int send(SERIAL_PORT port, char *cmd, stParam *param)
     int16_t z = 1000*kx_z;
     int16_t l = lux;
     int16_t b = voltage;
-    int32_t LatitudeBinary= latitude/10; //Latitude : 0.0001 ° Signed MSB
-    int32_t LongitudeBinary= longitude/10; //Longitude : 0.0001 ° Signed MSB
+    int32_t LatitudeBinary= latitude/100; //Latitude : 0.0001 ° Signed MSB
+    int32_t LongitudeBinary= longitude/100; //Longitude : 0.0001 ° Signed MSB
     int32_t AltitudeBinary= alt/10; // Altitude : 0.01 meter Signed MSB
     uint16_t s= 100*nmea.getNumSatellites(); // nb of satellite in view with GNSS
 
