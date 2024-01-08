@@ -42,8 +42,9 @@ Adafruit_SHTC3 shtc3 = Adafruit_SHTC3();
 KX023 myIMU;
 LTR303 light;
 
-unsigned char gain=0;     // Gain setting, values = 0-7 
-unsigned char integrationTime=0;  // Integration ("shutter") time in milliseconds
+int8_t gain=0;     // Gain setting, values = 0-7 
+int8_t integrationTime=1;  // Integration ("shutter") time in milliseconds
+int8_t measRate=0;  // Integration ("shutter") time in milliseconds
 uint16_t voltage_adc;
 uint16_t voltage;
 float kx_x, kx_y, kx_z;
@@ -77,6 +78,8 @@ uint8_t it=0;
 uint32_t quectelDelayTime = 500;
 unsigned long currentMillis = 0, getSensorDataPrevMillis = 0, getGPSPrevMillis = 0;
 bool sht_status;
+
+
 bool getSHTstatus()
 {
   if (!shtc3.begin())
@@ -298,19 +301,20 @@ int KX023_AZ(SERIAL_PORT port, char *cmd, stParam *param)
 
 bool getLTRstatus()
 {
-  unsigned char ID; 
-   
-  if (light.getPartID(ID)) {
+    light.begin();
     light.setControl(gain, false, false);
-    light.setMeasurementRate(1,3);
+    light.setMeasurementRate(integrationTime,measRate);
+    light.setPowerUp();
+    
+    
     return 1;
-  }
+  //}
   // Most library commands will return true if communications was successful,
   // and false if there was a problem. You can ignore this returned value,
   // or check whether a command worked correctly and retrieve an error code:
-  else {
-    return 0;
-  }  
+  //else {
+  //  return 0;
+  //}  
 }
 
 unsigned char getLTRID()
@@ -355,14 +359,14 @@ int LTR_ch0(SERIAL_PORT port, char *cmd, stParam *param)
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     //ltr_status = getLTRstatus();
-    //light.setPowerUp();
-    //delay(5000);
+    
+    //delay(300);
     if (light.getData(visible, infrared)){
           if (param->argc == 0){
           Serial.print(cmd);
           Serial.print("=");}
           Serial.println(visible);
-         // light.setPowerDown(); 
+          //light.setPowerDown(); 
         }
     else
         {
@@ -389,14 +393,14 @@ int LTR_ch1(SERIAL_PORT port, char *cmd, stParam *param)
     
     //ltr_status = getLTRstatus();
     //light.setPowerUp();
-    //delay(200);
+    //delay(300);
       if (light.getData(visible, infrared))
       {        
           if (param->argc == 0){
       Serial.print(cmd);
       Serial.print("=");}
       Serial.println(infrared);
-     // light.setPowerDown();      
+      //light.setPowerDown();      
       }  
     else
     {
@@ -419,8 +423,8 @@ int LTR_lux(SERIAL_PORT port, char *cmd, stParam *param)
   if ((param->argc == 0) || (param->argc == 1 && (strcmp(param->argv[0], "?") == 0)))
   {
     //ltr_status = getLTRstatus();
-   // light.setPowerUp();
-    //delay(5000);    
+    //light.setPowerUp();
+    //delay(300);    
       if (light.getData(visible, infrared))
       {       
           if (param->argc == 0){
@@ -807,8 +811,8 @@ void setup()
   digitalWrite(LED, LOW);
   sht_status = getSHTstatus();
   kx023_status = getKX023status();
-  light.begin();
-  light.setPowerUp();
+  ltr_status = getLTRstatus();
+  
   while (!Serial)
   {
     delay(10); // wait for serial port to open
